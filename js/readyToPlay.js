@@ -140,9 +140,13 @@ const checkMyAnswer = () => {
     console.log(JSON.stringify(randomColors))
 
     if (JSON.stringify(correctAnswerSecretChoice) == JSON.stringify(randomColors)) {
-        console.log("ASD")
         window.location.href = "./winner.html";
     } else {
+        // Clonamos y reemplazamos los squares de la fila para quitarles el eventListener
+        squareElements.forEach((square) => {
+            let clonedSquare = square.cloneNode(true);
+            square.parentNode.replaceChild(clonedSquare, square);
+        })
         currentRow++;
         // if (currentRow){
         //     let nextFill = document.getElementById(`fila${currentRow}`);
