@@ -106,7 +106,7 @@ firstRowSquares.forEach((square) => {
 // Aquí empieza la comprobación
 
 let currentRow = 1;
-let gridItems = document.querySelectorAll(".grid-item");
+
 
 const checkMyAnswer = () => {
     let squareElements = document.querySelectorAll(`#fila-${currentRow} .squareR`);
@@ -122,6 +122,7 @@ const checkMyAnswer = () => {
         }
     }
 
+    let gridItems = document.querySelectorAll(`#fila-${currentRow} .grid-item`);
     gridItems.forEach((gridItem, index) => {
         if (index < 4) {
             if (matchedPositions.includes(index)) {
@@ -144,9 +145,18 @@ const checkMyAnswer = () => {
             let clonedSquare = square.cloneNode(true);
             square.parentNode.replaceChild(clonedSquare, square);
         })
+        let nextSquareElements = document.querySelectorAll(`#fila-${currentRow + 1} .squareR`);
+        nextSquareElements.forEach((square) => {
+            square.addEventListener("click", () => {
+                let currentColorIndex = colors.indexOf(square.style.backgroundColor);
+                let nextColorIndex = (currentColorIndex + 1) % colors.length;
+                let nextColor = colors[nextColorIndex];
+                square.style.backgroundColor = nextColor;
+            })
+        })
         currentRow++;
+
         // if (currentRow){
-        //     let nextFill = document.getElementById(`fila${currentRow}`);
         //     console.log(currentRow);
         //     let  nextSquareElements = nextFill.querySelectorAll(".squareR");
         //     nextSquareElements.forEach(square => {
