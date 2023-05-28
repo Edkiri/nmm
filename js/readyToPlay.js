@@ -8,7 +8,7 @@ let rowCounter = 1;
 const createMyFills = () => {
   let fila = document.createElement("div");
   fila.className = "fila";
-  fila.id = "fila" + rowCounter;
+  fila.id = "fila-" + rowCounter;
 
   for (let i = 0; i < 4; i++) {
     let squareR = document.createElement("div");
@@ -45,7 +45,10 @@ if (dificultad === "beginnerRow") {
 }
 // Tomamos el valor que anteriormente guardamos en el sessionStorage.
 const colorsFromLocalStorage = JSON.parse(sessionStorage.getItem("myColor"));
-console.log("Estos son los colores que devuelve el sessionStorage:", colorsFromLocalStorage);
+console.log(
+  "Estos son los colores que devuelve el sessionStorage:",
+  colorsFromLocalStorage
+);
 // Esto nos devuelve un objeto tipo { B: "color", B1: "color2" ... }.
 // Te recomiendo solo guardar un array de colores en el sessionStorage, tipo ["color1", "color2", ...].
 // Para crear un array de todos los valores de ese objeto, usamos lo siguiente.
@@ -61,25 +64,97 @@ colors.map((color, index) => {
   selectedColor.id = "selectedColorsOfPicker" + index;
   selectedColor.style.backgroundColor = color;
   myColorsForPlayElement.appendChild(selectedColor);
-})
+});
 
 // Generamos la combinación secreta de colores
 let randomColors = [];
 
 const secretAnswerColor = () => {
-    let transformToArrayColors = Object.values(colorsFromLocalStorage);
-    let indexArray = [...Array(transformToArrayColors.length).keys()];
-    for (let i = 0; i < transformToArrayColors.length; i++) {
-        let randomIndex = Math.floor(Math.random() * indexArray.length);
-        let randomColorIndex = indexArray[randomIndex];
-        randomColors.push(transformToArrayColors[randomColorIndex]);
-        indexArray.splice(randomIndex, 1);
-    }
+  let transformToArrayColors = Object.values(colorsFromLocalStorage);
+  let indexArray = [...Array(transformToArrayColors.length).keys()];
+  for (let i = 0; i < transformToArrayColors.length - 1; i++) {
+    let randomIndex = Math.floor(Math.random() * indexArray.length);
+    let randomColorIndex = indexArray[randomIndex];
+    randomColors.push(transformToArrayColors[randomColorIndex]);
+    indexArray.splice(randomIndex, 1);
+  }
 };
 
 secretAnswerColor();
 
-document.getElementById("secretColorAnswer1").style.backgroundColor = randomColors[0];
-document.getElementById("secretColorAnswer2").style.backgroundColor = randomColors[1];
-document.getElementById("secretColorAnswer3").style.backgroundColor = randomColors[2];
-document.getElementById("secretColorAnswer4").style.backgroundColor = randomColors[3];
+document.getElementById("secretColorAnswer1").style.backgroundColor =
+  randomColors[0];
+document.getElementById("secretColorAnswer2").style.backgroundColor =
+  randomColors[1];
+document.getElementById("secretColorAnswer3").style.backgroundColor =
+  randomColors[2];
+document.getElementById("secretColorAnswer4").style.backgroundColor =
+  randomColors[3];
+
+// revisar si esta bien declarado el click, por que quiero que me funcione en cada linea
+const firstRowSquares = document.querySelectorAll(".fila:first-child .squareR");
+
+firstRowSquares.forEach((square) => {
+  square.addEventListener("click", () => {
+    let currentColorIndex = colors.indexOf(square.style.backgroundColor);
+    let nextColorIndex = (currentColorIndex + 1) % colors.length;
+    let nextColor = colors[nextColorIndex];
+    square.style.backgroundColor = nextColor;
+  });
+});
+
+// Aquí empieza la comprobación
+
+let currentRow = 1;
+let gridItems = document.querySelectorAll(".grid-item");
+
+const checkMyAnswer = () => {
+    let squareElements = document.querySelectorAll(`#fila-${currentRow} .squareR`);
+    let yourCombination = Array.from(squareElements, (el) => el.style.backgroundColor);
+    let matchedColors = [];
+    let matchedPositions = [];
+
+    for (let i = 0; i < randomColors.length; i++) {
+        if (randomColors[i] === yourCombination[i]) {
+            matchedPositions.push(i);
+        } else if (yourCombination.includes(randomColors[i])) {
+            matchedColors.push(i);
+        }
+    }
+
+    gridItems.forEach((gridItem, index) => {
+        if (index < 4) {
+            if (matchedPositions.includes(index)) {
+                gridItem.style.backgroundColor = "red";
+            } else if (matchedColors.includes(index)) {
+                gridItem.style.backgroundColor = "white";
+            } else {
+                gridItem.style.backgroundColor = "transparent";
+            }
+        }
+    });
+
+    let correctAnswerSecretChoice = Array.from(squareElements, (el) => el.style.backgroundColor);
+
+    console.log(JSON.stringify(correctAnswerSecretChoice))
+    console.log(JSON.stringify(randomColors))
+
+    if (JSON.stringify(correctAnswerSecretChoice) == JSON.stringify(randomColors)) {
+        console.log("ASD")
+        window.location.href = "./winner.html";
+    } else {
+        currentRow++;
+        // if (currentRow){
+        //     let nextFill = document.getElementById(`fila${currentRow}`);
+        //     console.log(currentRow);
+        //     let  nextSquareElements = nextFill.querySelectorAll(".squareR");
+        //     nextSquareElements.forEach(square => {
+        //         square.style.backgroundColor = "transparent";
+        //     });
+        //     nextFill.addEventListener("click", checkMyAnswer);
+
+        //     } else {
+        //         console.log("se acabo!!!!!");
+        //     }
+        }
+    };
