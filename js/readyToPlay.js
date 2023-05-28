@@ -136,9 +136,6 @@ const checkMyAnswer = () => {
 
     let correctAnswerSecretChoice = Array.from(squareElements, (el) => el.style.backgroundColor);
 
-    console.log(JSON.stringify(correctAnswerSecretChoice))
-    console.log(JSON.stringify(randomColors))
-
     if (JSON.stringify(correctAnswerSecretChoice) == JSON.stringify(randomColors)) {
         window.location.href = "./winner.html";
     } else {
