@@ -72,7 +72,7 @@ let randomColors = [];
 const secretAnswerColor = () => {
   let transformToArrayColors = Object.values(colorsFromLocalStorage);
   let indexArray = [...Array(transformToArrayColors.length).keys()];
-  for (let i = 0; i < transformToArrayColors.length - 1; i++) {
+  for (let i = 0; i < 4; i++) {
     let randomIndex = Math.floor(Math.random() * indexArray.length);
     let randomColorIndex = indexArray[randomIndex];
     randomColors.push(transformToArrayColors[randomColorIndex]);
